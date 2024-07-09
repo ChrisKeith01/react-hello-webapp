@@ -22,9 +22,9 @@ const AddContact = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (id) {
-            await actions.updateContacts(id, contact);
+            await actions.updateContact(id, contact);
         } else {
-            await actions.createContacts(contact);
+            await actions.createContact(contact);
         }
         navigate('/');
     };
@@ -57,8 +57,6 @@ const AddContact = () => {
 };
 
 export default AddContact;
-
-
 
 
 

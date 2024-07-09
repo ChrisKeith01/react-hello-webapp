@@ -1,72 +1,83 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			contacts:[]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-		fetchContacts: async () => {
-			try {
-				const response = await fetch('https://playground.4geeks.com/apis/fake/contact/chriskeith01');
-				const data = await response.json();
-				setStore({contacts: data});
+    return {
+        store: {
+            contacts: []
+        },
+        actions: {
+            fetchContacts: async () => {
+                try {
+                    const response = await fetch('https://playground.4geeks.com/contact/agendas/chriskeith01/contacts');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    setStore({ contacts: data.contacts });
+                } catch (error) {
+                    console.error("Error fetching contacts:", error);
+                }
+            },
+            createContact: async (contact) => {
+                try {
+                    const mappedContact = {
+                        name: contact.full_name,
+                        email: contact.email,
+                        phone: contact.phone,
+                        address: contact.address
+                    };
 
-			} catch (error) {
-				console.error('error fetching contacts:', error);
-			}
-		},
-		createContacts: async (contacts) => {
-			try {
-				const response = await fetch('https://playground.4geeks.com/apis/fake/contact/chriskeith01', {
-					method: 'POST',
-					headers: {'Content-Type': 'apllication/json'},
-					body: JSON.stringify(contacts)
-				});
-				if (response.ok) {
-					getActions().fetchContacts();
-				} else {
-					console.error('error creating contacts:', response.statusText)
-				}
-			} catch (error) {
-				console.error('error creating contacts:', error); 
-			}
-		},
-		updateContacts: async (id, updatedContacts) => {
-			try {
-				const response = await fetch(`https://playground.4geeks.com/apis/fake/contact/chriskeith01/${id}`, {
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(updatedContacts) 
-				});
-				if (response.ok) {
-					getActions().fetchContacts();
-				}
-				else {
-					console.error('error updating contacts:', response.statusText);
-				}
-			} catch (error) {
-				console.error('error updating contacts:', error);
-			}
-		},
-		deleteContacts: async (id) => {
-			try {
-				const response = await fetch(`https://playground.4geeks.com/apis/fake/contact/chriskeith01/${id}`, {
-					method: 'DELETE'
-				});
-				if (response.ok) {
-					getActions().fetchContacts(); // Refresh the contact list
-				} else {
-					console.error("Error deleting contact:", response.statusText);
-				}
-			} catch (error) {
-				console.error("Error deleting contact:", error);
-			}
-		},
-		
-		}
-	};
+                    const response = await fetch('https://playground.4geeks.com/contact/agendas/chriskeith01/contacts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(mappedContact)
+                    });
+                    if (response.ok) {
+                        getActions().fetchContacts();
+                    } else {
+                        console.error("Error creating contact:", response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Error creating contact:", error);
+                }
+            },
+            updateContact: async (id, updatedContact) => {
+                try {
+                    const mappedContact = {
+                        name: updatedContact.full_name,
+                        email: updatedContact.email,
+                        phone: updatedContact.phone,
+                        address: updatedContact.address
+                    };
+
+                    const response = await fetch(`https://playground.4geeks.com/contact/agendas/chriskeith01/contacts/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(mappedContact)
+                    });
+                    if (response.ok) {
+                        getActions().fetchContacts();
+                    } else {
+                        console.error("Error updating contact:", response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Error updating contact:", error);
+                }
+            },
+            deleteContact: async (id) => {
+                try {
+                    const response = await fetch(`https://playground.4geeks.com/contact/agendas/chriskeith01/contacts/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        getActions().fetchContacts();
+                    } else {
+                        console.error("Error deleting contact:", response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Error deleting contact:", error);
+                }
+            }
+        }
+    };
 };
 
 export default getState;
